@@ -1,0 +1,42 @@
+# این فایل، شناسنامه و تنظیمات پروژه "مثال" است.
+# این پروژه برای نمایش قدرت پکیج اصلی شما یعنی text_fa ساخته شده است.
+
+name: text_fa_example
+description: یک پروژه نمایشی برای به رخ کشیدن قدرت و هوشمندی پکیج text_fa.
+
+# این خط از انتشار تصادفی پوشه مثال به pub.dev جلوگیری می‌کند.
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.17.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # مهم‌ترین بخش:
+  # در اینجا ما به پکیج اصلی که در پوشه والد قرار دارد، ارجاع می‌دهیم.
+  text_fa:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+# بخش تنظیمات اختصاصی فلاتر برای این پروژه مثال
+flutter:
+  uses-material-design: true
+
+  # تعریف فونت وزیرمتن که در اپلیکیشن مثال استفاده شده است.
+  # قربان، لطفاً توجه داشته باشید که باید فایل‌های فونت (مثلاً Vazirmatn-Regular.ttf)
+  # را در پوشه‌ای به نام fonts در کنار این فایل قرار دهید.
+  # fonts:
+  #   - family: Vazirmatn
+  #     fonts:
+  #       - asset: fonts/Vazirmatn-Regular.ttf
+  #       - asset: fonts/Vazirmatn-Bold.ttf
+  #         weight: 700

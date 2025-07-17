@@ -1,0 +1,19 @@
+
+name: text_fa
+description: یک پکیج هوشمند و قدرتمند برای مدیریت خودکار جهت متن (راست‌چین و چپ‌چین) در فلاتر. این پکیج، مشکل نمایش متون ترکیبی فارسی و انگلیسی را به زیبایی حل می‌کند. ایده و خلق شده تحت فرماندهی شما.
+version: 1.0.0
+# homepage: # آدرس گیت‌هاب یا وبسایت شما در اینجا قرار می‌گیرد
+
+environment:
+  sdk: '>=2.17.0 <4.0.0' 
+  flutter: '>=1.17.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
