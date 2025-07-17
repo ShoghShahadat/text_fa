@@ -90,11 +90,6 @@ dependencies:
 
 ### بخش اول: نمایش متن (Text)
 
-<p align="center">
-  <em>جایگاه تصویر یا GIF برای نمایش قدرت TextFa و .fa()</em>
-  <br>
-  <code>![تصویری از TextFa در عمل](لینک_تصویر_شما_اینجا)</code>
-</p>
 
 #### الف) ویجت `TextFa`
 
