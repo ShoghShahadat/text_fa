@@ -1,5 +1,5 @@
-// این فایل، نسخه نهایی و احیا شده ویجت انقلابی SuperTextFieldFa است.
-// مشکل عدم دریافت ورودی و عدم نمایش مکان‌نما در این نسخه به طور کامل برطرف شده است.
+// این فایل، نسخه نهایی و تکامل‌یافته ویجت انقلابی SuperTextFieldFa است.
+// مشکل عدم نمایش منوی انتخاب و دسته‌ها در این نسخه به طور کامل برطرف شده است.
 
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -27,11 +27,9 @@ class SuperTextFieldFa extends StatefulWidget {
   SuperTextFieldFaState createState() => SuperTextFieldFaState();
 }
 
-// FIX: Added SingleTickerProviderStateMixin for animation.
 class SuperTextFieldFaState extends State<SuperTextFieldFa>
     with SingleTickerProviderStateMixin {
   late final FocusNode _focusNode;
-  // FIX: Added AnimationController for the blinking cursor.
   late final AnimationController _cursorAnimation;
 
   @override
@@ -39,13 +37,11 @@ class SuperTextFieldFaState extends State<SuperTextFieldFa>
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
 
-    // FIX: Initialize the animation controller for a 500ms blink cycle.
     _cursorAnimation = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
 
-    // Start/stop the blinking animation based on focus.
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _cursorAnimation.repeat();
@@ -71,45 +67,56 @@ class SuperTextFieldFaState extends State<SuperTextFieldFa>
         widget.style ?? theme.textTheme.titleMedium ?? const TextStyle();
     final effectiveDecoration = widget.decoration ?? const InputDecoration();
 
-    // FIX: Wrapped with a GestureDetector to handle taps and request focus.
-    return GestureDetector(
-      onTap: () {
-        if (!_focusNode.hasFocus) {
-          _focusNode.requestFocus();
-        }
-      },
-      child: Stack(
-        children: [
-          TextField(
+    // FIX: The architecture is now inverted. The CustomPaint is in the background,
+    // and a transparent, fully-functional TextField is on top.
+    return Stack(
+      children: [
+        // Layer 1: The custom painter in the background.
+        // It draws the beautiful text, selection, and cursor.
+        Positioned.fill(
+          child: CustomPaint(
+            painter: _FaTextPainter(
+              controller: widget.controller,
+              focusNode: _focusNode,
+              cursorAnimation: _cursorAnimation,
+              textStyle: effectiveTextStyle,
+              textAlign: TextAlign.start,
+              contentPadding: effectiveDecoration.contentPadding
+                      ?.resolve(TextDirection.ltr) ??
+                  EdgeInsets.zero,
+            ),
+          ),
+        ),
+
+        // Layer 2: The "Ghost" TextField on top.
+        // It's completely transparent but handles all user input, gestures,
+        // and displays the native selection handles and toolbar.
+        Theme(
+          // Make the native selection highlight transparent, so our custom one is visible.
+          data: theme.copyWith(
+            textSelectionTheme: theme.textSelectionTheme.copyWith(
+              selectionColor: Colors.transparent,
+            ),
+          ),
+          child: TextField(
             controller: widget.controller,
             focusNode: _focusNode,
-            decoration: effectiveDecoration,
+            decoration: effectiveDecoration.copyWith(
+              // Make decoration transparent
+              fillColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+            ),
+            // Make text and cursor transparent
             style: effectiveTextStyle.copyWith(color: Colors.transparent),
+            cursorColor: Colors.transparent,
             maxLines: widget.maxLines,
             minLines: widget.minLines,
             enableInteractiveSelection: true,
-            cursorColor: Colors.transparent,
             selectionControls: materialTextSelectionControls,
           ),
-
-          // The painter no longer needs to be ignored by pointers.
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _FaTextPainter(
-                controller: widget.controller,
-                focusNode: _focusNode,
-                // FIX: Pass the animation to the painter.
-                cursorAnimation: _cursorAnimation,
-                textStyle: effectiveTextStyle,
-                textAlign: TextAlign.start,
-                contentPadding: effectiveDecoration.contentPadding
-                        ?.resolve(TextDirection.ltr) ??
-                    EdgeInsets.zero,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -117,7 +124,7 @@ class SuperTextFieldFaState extends State<SuperTextFieldFa>
 class _FaTextPainter extends CustomPainter {
   final TextEditingController controller;
   final FocusNode focusNode;
-  final Animation<double> cursorAnimation; // FIX: Accept the animation.
+  final Animation<double> cursorAnimation;
   final TextStyle textStyle;
   final TextAlign textAlign;
   final EdgeInsets contentPadding;
@@ -129,7 +136,6 @@ class _FaTextPainter extends CustomPainter {
     required this.textStyle,
     required this.textAlign,
     required this.contentPadding,
-    // FIX: Listen to all required Listenables for repaint.
   }) : super(
             repaint:
                 Listenable.merge([controller, focusNode, cursorAnimation]));
@@ -164,6 +170,7 @@ class _FaTextPainter extends CustomPainter {
           ? size.width - textPainter.width - contentPadding.right
           : contentPadding.left;
 
+      // Paint the selection highlight
       if (selection.isValid && !selection.isCollapsed) {
         if (selection.start < lineEnd && selection.end > lineStart) {
           final selectionStartInLine =
@@ -184,9 +191,10 @@ class _FaTextPainter extends CustomPainter {
         }
       }
 
+      // Paint the text
       textPainter.paint(canvas, Offset(xOffset, yOffset));
 
-      // FIX: Use the animation value to decide whether to paint the cursor.
+      // Paint the blinking cursor
       if (focusNode.hasFocus &&
           cursorAnimation.value > 0.5 &&
           selection.isCollapsed &&
