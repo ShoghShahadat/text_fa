@@ -13,11 +13,41 @@
   </a>
 </p> -->
 
-<p align="center">
+<!-- <p align="center">
   <em>جایگاه تصویر یا GIF برای نمایش قدرت SuperTextFieldFa</em>
   <br>
-  <code>![تصویری از SuperTextFieldFa در عمل](لینک_تصویر_شما_اینجا)</code>
-</p>
+  <a href="https://uupload.ir/view/screenshot_2025-07-17_061911_uzql.png">
+    <img src="https://s6.uupload.ir/files/screenshot_2025-07-17_061911_uzql.png" alt="SuperTextFieldFa در عمل" width="500"/>
+  </a>
+</p> -->
+
+---
+<!-- <p align="center">
+  <em>جایگاه تصویر یا GIF برای نمایش قدرت SuperTextFieldFa</em>
+  <br>
+  <a href="https://uupload.ir/view/screenshot_2025-07-17_061911_uzql.png">
+    <img src="https://s6.uupload.ir/files/screenshot_2025-07-17_061911_uzql.png" alt="SuperTextFieldFa در عمل" width="500"/>
+  </a>
+</p> -->
+
+---
+
+### 📝 نمایش قابلیت‌های SuperTextFieldFa
+
+🔗 **[مشاهده دمو](https://shoghshahadat.github.io/text_fa/)**
+
+---
+
+#### 🔤 نمایی از فیلد متنی:
+
+[![تکس فیلد](https://s6.uupload.ir/files/screenshot_2025-07-17_062059_8kq5.png)](https://uupload.ir/view/screenshot_2025-07-17_062059_8kq5.png)
+
+---
+
+#### 🖋️ نمایی از متن نهایی خروجی:
+
+[![متن](https://s6.uupload.ir/files/screenshot_2025-07-17_061911_uzql.png)](https://uupload.ir/view/screenshot_2025-07-17_061911_uzql.png)
+
 
 ## ۱. فلسفه و مقدمه
 
