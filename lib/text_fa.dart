@@ -10,3 +10,4 @@ export 'src/text_fa_extension.dart';
 // بخش تعاملی (TextField)
 export 'src/text_field_fa_widget.dart';
 export 'src/fa_text_editing_controller.dart';
+export 'src/super_text_field_fa.dart';

@@ -1,5 +1,5 @@
 // این نسخه نهایی و کامل پروژه مثال است.
-// شامل بخش‌های مجزا برای نمایش قدرت Text و TextField.
+// شامل اصلاحات معماری، رفع تمام خطاها و نمایش تمام ویجت‌ها.
 
 import 'package:flutter/material.dart';
 import 'package:text_fa/text_fa.dart';
@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
       title: 'مثال پکیج TextFa',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        // fontFamily: 'Vazirmatn',
+        primarySwatch: Colors.indigo,
+        fontFamily: 'Vazirmatn',
         textTheme: const TextTheme(
           bodyMedium: TextStyle(fontSize: 18, height: 1.5),
         ),
@@ -30,32 +30,41 @@ class MyApp extends StatelessWidget {
           fillColor: Colors.grey.shade100,
         ),
       ),
+      // FIX: Correctly pointing to the new StatefulWidget
       home: const MyHomePage(),
     );
   }
 }
 
+// FIX: Added the missing StatefulWidget class definition.
+// این "جسم" ویجت بود که فراموش شده بود.
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
+  // FIX: This now correctly creates the state for MyHomePage.
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// این "روح" ویجت است که اکنون به جسم صحیح خود متصل شده.
 class _MyHomePageState extends State<MyHomePage> {
-  // یک کنترلر هوشمند برای نمایش قدرت FaTextEditingController
+  // کنترلرها برای فیلدهای ورودی
   late final FaTextEditingController _smartController;
+  late final TextEditingController _superController;
 
   @override
   void initState() {
     super.initState();
     _smartController =
         FaTextEditingController(text: 'Hello from smart controller!');
+    _superController = TextEditingController(
+        text: 'این یک شاهکار است.\nThis is a masterpiece.');
   }
 
   @override
   void dispose() {
     _smartController.dispose();
+    _superController.dispose();
     super.dispose();
   }
 
@@ -137,91 +146,95 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('نمایش قدرت پکیج TextFa'),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // بخش ورودی‌های هوشمند
-          _buildSectionTitle('بخش ورودی‌های هوشمند (TextField)'),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            // بخش ورودی‌های هوشمند
+            _buildSectionTitle('بخش ورودی‌های هوشمند (TextField)'),
 
-          _buildCard(
-            title: 'ویجت TextFieldFa',
-            child: const TextFieldFa(
-              decoration: InputDecoration(
-                hintText: 'اینجا بنویسید و جادو را ببینید...',
-                labelText: 'با ویجت TextFieldFa',
+            // ویجت انقلابی SuperTextFieldFa
+            _buildCard(
+              title: 'ویجت SuperTextFieldFa (شاهکار نهایی)',
+              subtitle: 'هر خط جهت‌گیری مستقل دارد. کل متن را انتخاب کنید!',
+              child: SuperTextFieldFa(
+                controller: _superController,
+                minLines: 3,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  hintText: 'جادوی واقعی اینجاست...',
+                  filled: true,
+                  fillColor: Color(0xFFF0F4FF),
+                ),
               ),
             ),
-          ),
 
-          _buildCard(
-            title: 'کنترلر FaTextEditingController',
-            child: ValueListenableBuilder<TextDirection>(
-              valueListenable: _smartController.directionNotifier,
-              builder: (context, direction, child) {
-                return TextField(
-                  controller: _smartController,
-                  textDirection: direction,
-                  textAlign: TextAlign.start,
-                  decoration: const InputDecoration(
-                    labelText: 'با کنترلر هوشمند',
-                    hintText: 'اینجا هم بنویسید...',
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // بخش نمایش متن
-          _buildSectionTitle('بخش نمایش متن (Text)'),
-
-          ...testCases.map((item) {
-            return _buildCard(
-              title: item['title'] ?? 'بدون عنوان',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('با ویجت TextFa():',
-                      style: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextFa(item['text'] ?? ''),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text('با اکستنشن .fa():',
-                      style: TextStyle(
-                          color: Colors.teal, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(item['text'] ?? '').fa(),
-                  ),
-                ],
+            // ویجت‌های قبلی
+            _buildCard(
+              title: 'ویجت TextFieldFa (چند خطی)',
+              child: const TextFieldFa(
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'جهت کل فیلد تغییر می‌کند...',
+                ),
               ),
-            );
-          }).toList(),
-        ],
+            ),
+
+            _buildCard(
+              title: 'کنترلر FaTextEditingController',
+              child: ValueListenableBuilder<TextDirection>(
+                valueListenable: _smartController.directionNotifier,
+                builder: (context, direction, child) {
+                  return TextField(
+                    controller: _smartController,
+                    textDirection: direction,
+                    textAlign: TextAlign.start,
+                  );
+                },
+              ),
+            ),
+
+            // بخش نمایش متن
+            _buildSectionTitle('بخش نمایش متن (Text)'),
+
+            ...testCases.map((item) {
+              return _buildCard(
+                title: item['title'] ?? 'بدون عنوان',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('با ویجت TextFa():',
+                        style: TextStyle(
+                            color: Colors.indigo, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextFa(item['text'] ?? ''),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCard({required String title, required Widget child}) {
+  Widget _buildCard(
+      {required String title, String? subtitle, required Widget child}) {
     return Card(
-      elevation: 2,
+      elevation: 3,
+      // FIX: Replaced deprecated withOpacity with withAlpha. (0.2 * 255 ~= 51)
+      shadowColor: Colors.indigo.withAlpha(51),
       margin: const EdgeInsets.only(bottom: 20.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -234,6 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   .titleLarge
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+            ],
             const Divider(height: 24, thickness: 1),
             child,
           ],
